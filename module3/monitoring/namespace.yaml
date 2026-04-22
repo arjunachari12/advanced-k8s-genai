@@ -1,0 +1,7 @@
+# The observability stack is kept in its own namespace so it is easier to manage in training.
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: monitoring
+  labels:
+    app.kubernetes.io/part-of: genai-platform

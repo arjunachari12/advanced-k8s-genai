@@ -56,7 +56,7 @@ The manifests in this module already reference published images, but students ca
 ```bash
 cd module2
 
-docker build -t sham/genai-ui:1.0.1 ./ui
+docker build -t arjunachari12/genai-ui:1.0.1 ./ui
 docker build -t arjunachari12/genai-api:1.0.0 ./api
 docker build -t arjunachari12/genai-ollama:1.0.0 ./llm
 
