@@ -1,0 +1,24 @@
+# This ingress is optional and only works if the cluster has an ingress controller installed.
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: genai-ingress
+  namespace: genai
+  labels:
+    app: ui
+    tier: frontend
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: genai.local
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: ui-service
+                port:
+                  number: 80

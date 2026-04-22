@@ -1,0 +1,50 @@
+# The UI deployment runs a small NGINX container that serves static files and proxies API calls.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ui
+  namespace: genai
+  labels:
+    app: ui
+    tier: frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ui
+      tier: frontend
+  template:
+    metadata:
+      labels:
+        app: ui
+        tier: frontend
+    spec:
+      containers:
+        - name: ui
+          image: arjunachari12/genai-ui:1.0.1
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: API_UPSTREAM
+              value: http://api-service.genai.svc.cluster.local:8000
+          ports:
+            - containerPort: 80
+              name: http
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: http
+            initialDelaySeconds: 15
+            periodSeconds: 20
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            limits:
+              cpu: 200m
+              memory: 128Mi

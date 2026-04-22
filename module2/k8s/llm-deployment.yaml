@@ -1,0 +1,75 @@
+# The LLM deployment runs Ollama and stores downloaded models on a PersistentVolumeClaim.
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: ollama-models-pvc
+  namespace: genai
+  labels:
+    app: llm
+    tier: model
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 8Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: llm
+  namespace: genai
+  labels:
+    app: llm
+    tier: model
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: llm
+      tier: model
+  template:
+    metadata:
+      labels:
+        app: llm
+        tier: model
+    spec:
+      containers:
+        - name: ollama
+          image: arjunachari12/genai-ollama:1.0.0
+          imagePullPolicy: IfNotPresent
+          command: ["/bin/sh", "/entrypoint.sh"]
+          env:
+            - name: OLLAMA_MODEL
+              value: tinyllama
+            - name: OLLAMA_HOST
+              value: 0.0.0.0:11434
+          ports:
+            - containerPort: 11434
+              name: http
+          volumeMounts:
+            - name: ollama-models
+              mountPath: /root/.ollama
+          readinessProbe:
+            httpGet:
+              path: /api/tags
+              port: http
+            initialDelaySeconds: 20
+            periodSeconds: 15
+          livenessProbe:
+            httpGet:
+              path: /api/tags
+              port: http
+            initialDelaySeconds: 40
+            periodSeconds: 30
+          resources:
+            requests:
+              cpu: 250m
+              memory: 1Gi
+            limits:
+              cpu: "1"
+              memory: 2Gi
+      volumes:
+        - name: ollama-models
+          persistentVolumeClaim:
+            claimName: ollama-models-pvc

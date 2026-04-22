@@ -1,0 +1,11 @@
+# FastAPI powers the HTTP API.
+fastapi==0.116.1
+
+# Uvicorn is the ASGI server used in the container.
+uvicorn[standard]==0.35.0
+
+# httpx is used to call the Ollama HTTP API.
+httpx==0.28.1
+
+# This package auto-exposes Prometheus metrics from FastAPI.
+prometheus-fastapi-instrumentator==7.1.0

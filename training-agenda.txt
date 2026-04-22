@@ -1,0 +1,67 @@
+
+Course Modules (Detailed Outline):
+Day 1:
+Module 1: Environment Setup and Cluster Bootstrapping
+Install and configure Rancher Desktop, kubectl, kind, and helm
+Create and validate a multi-node KIND cluster
+Initialize project repositories on GitHub and scaffold directories
+Validate cluster health and toolchain readiness
+Module 2: Manual Deployment with Kubernetes YAML
+Build and containerize a GenAI application (FastAPI + local LLM such as TinyLlama or Ollama)
+Create Kubernetes manifests for Deployments, Services, and Ingress
+Deploy the GenAI stack manually to the cluster
+Store YAML files in Git for future reuse and packaging
+Module 3: Observability with Prometheus, Loki & Grafana
+Deploy Prometheus, Grafana, Loki, and Promtail using manifests
+Expose application metrics from FastAPI
+Create Grafana dashboards (latency, error rate, request count)
+Collect logs with Loki and visualize traces for analysis
+Module 5: Helm Chart Development
+Introduction to Helm: structure, templating, and values files
+Convert previous YAMLs into a reusable Helm chart
+Test local chart installs, upgrades, and rollbacks
+Define staging vs production values
+Day 2:
+Module 4: Autoscaling with KEDA and Prometheus Metrics
+Install and configure Prometheus Adapter for custom metric exposure
+Deploy KEDA and define ScaledObjects
+Implement autoscaling based on custom latency metrics
+Simulate traffic and observe autoscaler in action
+Module 6: GitOps and Progressive Delivery with ArgoCD
+Deploy ArgoCD on the KIND cluster
+Create Argo Applications sourcing from Helm charts
+Enable auto-sync, self-healing, and application health checks
+Configure Argo Rollouts for canary deployments using Prometheus metrics
+Implement rollback strategies and analysis templates
+Module 7: CRDs and Kubernetes Operators
+Create and register a Custom Resource Definition (CRD)
+Develop a basic controller using the Operator SDK
+Automate lifecycle management of an AI workload
+Understand reconciliation loops and controller design patterns
+Day 3:
+Module 8: AI-Augmented Kubernetes using kubectl-ai and MCP
+Install and configure kubectl-ai and the MCP server
+Use AI slash commands to generate manifests, debug events, and analyze logs
+Build custom prompts for cluster insight
+Explore slash commands for interactive troubleshooting
+Module 9: Agentic AI Systems on Kubernetes
+Explore Kubernetes as a runtime for orchestrating multiple intelligent agents
+Design systems where agents manage ML lifecycle tasks (training, monitoring, scaling)
+Build a working prototype using MCP and lightweight LLM agents
+Discuss  use cases: automated RCA, continuous retraining, and self-healing AI pipelines
+
+Optional Topics (Time Permitting)
+Advanced Networking & Security:
+Cilium CNI with eBPF
+Hubble for observability and service-to-service policy enforcement
+CI Pipelines with GitHub Actions:
+Build, test, and push container images
+Automate Helm packaging and GitOps repo updates using GitHub Actions
+Argo Events and Argo Workflows:
+Event-driven CI/CD triggers
+Workflow orchestration for GenAI/ML systems
+Model Versioning and A/B Testing with Seldon Core:
+Deploy multiple model versions
+Route traffic dynamically between versions
+Monitor accuracy and performance with Prometheus
+

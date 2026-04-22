@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GenAI Product Copy Generator</title>
+    <style>
+      /* The styling is intentionally self-contained so the workshop has fewer moving parts. */
+      :root {
+        --bg: #f4efe6;
+        --panel: rgba(255, 252, 247, 0.88);
+        --ink: #1f2937;
+        --muted: #6b7280;
+        --accent: #0f766e;
+        --accent-dark: #115e59;
+        --line: rgba(31, 41, 55, 0.1);
+        --shadow: 0 24px 80px rgba(15, 23, 42, 0.16);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        color: var(--ink);
+        background:
+          radial-gradient(circle at top left, rgba(15, 118, 110, 0.18), transparent 25%),
+          radial-gradient(circle at bottom right, rgba(245, 158, 11, 0.18), transparent 30%),
+          linear-gradient(135deg, #f7f4ec, #ede7da);
+        display: grid;
+        place-items: center;
+        padding: 24px;
+      }
+
+      .shell {
+        width: min(960px, 100%);
+        display: grid;
+        grid-template-columns: 1.05fr 0.95fr;
+        gap: 24px;
+      }
+
+      .panel {
+        background: var(--panel);
+        backdrop-filter: blur(16px);
+        border: 1px solid var(--line);
+        border-radius: 24px;
+        box-shadow: var(--shadow);
+        padding: 28px;
+      }
+
+      h1 {
+        margin: 0 0 12px;
+        font-size: clamp(2rem, 4vw, 3.1rem);
+        line-height: 1;
+      }
+
+      p {
+        color: var(--muted);
+        line-height: 1.6;
+      }
+
+      label {
+        display: block;
+        font-weight: 600;
+        margin-top: 18px;
+        margin-bottom: 8px;
+      }
+
+      input,
+      textarea,
+      button {
+        width: 100%;
+        font: inherit;
+      }
+
+      input,
+      textarea {
+        border: 1px solid rgba(31, 41, 55, 0.15);
+        border-radius: 14px;
+        padding: 14px 16px;
+        background: white;
+      }
+
+      textarea {
+        min-height: 280px;
+        resize: vertical;
+      }
+
+      button {
+        margin-top: 20px;
+        border: none;
+        border-radius: 999px;
+        padding: 14px 18px;
+        background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+        color: white;
+        font-weight: 700;
+        cursor: pointer;
+        transition: transform 0.15s ease, box-shadow 0.15s ease;
+        box-shadow: 0 16px 40px rgba(15, 118, 110, 0.28);
+      }
+
+      button:hover {
+        transform: translateY(-1px);
+      }
+
+      button:disabled {
+        cursor: wait;
+        opacity: 0.8;
+      }
+
+      .status {
+        margin-top: 14px;
+        min-height: 24px;
+        font-size: 0.95rem;
+        color: var(--muted);
+      }
+
+      .tag {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        padding: 8px 12px;
+        margin-bottom: 18px;
+        font-size: 0.9rem;
+        color: var(--muted);
+        background: rgba(255, 255, 255, 0.85);
+      }
+
+      .tag::before {
+        content: "";
+        width: 8px;
+        height: 8px;
+        border-radius: 999px;
+        background: #22c55e;
+      }
+
+      @media (max-width: 860px) {
+        .shell {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="shell">
+      <section class="panel">
+        <div class="tag">Training-friendly GenAI app running on Kubernetes</div>
+        <h1>Generate product messaging with a local LLM</h1>
+        <p>
+          Enter a product and target audience. The UI calls the FastAPI backend, which in turn sends
+          a structured prompt to Ollama and returns the generated result.
+        </p>
+
+        <form id="generator-form">
+          <label for="product">Product</label>
+          <input id="product" name="product" placeholder="AI-powered coffee subscription" required />
+
+          <label for="audience">Audience</label>
+          <input id="audience" name="audience" placeholder="Busy engineering managers" required />
+
+          <button id="submit-button" type="submit">Generate Copy</button>
+          <div class="status" id="status">Waiting for your prompt.</div>
+        </form>
+      </section>
+
+      <section class="panel">
+        <label for="result">Generated response</label>
+        <textarea id="result" readonly placeholder="The model output will appear here."></textarea>
+      </section>
+    </main>
+
+    <script>
+      // The frontend intentionally calls a relative API path so NGINX can proxy to the backend in both Compose and Kubernetes.
+      const form = document.getElementById("generator-form");
+      const product = document.getElementById("product");
+      const audience = document.getElementById("audience");
+      const result = document.getElementById("result");
+      const status = document.getElementById("status");
+      const submitButton = document.getElementById("submit-button");
+
+      async function generateCopy(event) {
+        event.preventDefault();
+
+        submitButton.disabled = true;
+        status.textContent = "Generating content with Ollama...";
+        result.value = "";
+
+        try {
+          const response = await fetch("/api/generate", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+              product: product.value.trim(),
+              audience: audience.value.trim()
+            })
+          });
+
+          if (!response.ok) {
+            const errorPayload = await response.json().catch(() => ({}));
+            throw new Error(errorPayload.detail || "The API returned an unexpected error.");
+          }
+
+          const payload = await response.json();
+          result.value = payload.content;
+          status.textContent = `Completed using model: ${payload.model}`;
+        } catch (error) {
+          status.textContent = `Request failed: ${error.message}`;
+        } finally {
+          submitButton.disabled = false;
+        }
+      }
+
+      form.addEventListener("submit", generateCopy);
+    </script>
+  </body>
+</html>

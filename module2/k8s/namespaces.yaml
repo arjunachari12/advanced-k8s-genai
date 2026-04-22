@@ -1,0 +1,7 @@
+# Separate namespaces keep the training cluster organized and closer to real-world patterns.
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: genai
+  labels:
+    app.kubernetes.io/part-of: genai-platform

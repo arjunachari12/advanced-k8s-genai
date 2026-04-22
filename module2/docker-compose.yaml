@@ -1,0 +1,47 @@
+# Local development stack for the GenAI platform.
+# This mirrors the Kubernetes architecture in a simpler single-host setup.
+
+services:
+  llm:
+    build:
+      context: ./llm
+    container_name: genai-ollama
+    environment:
+      OLLAMA_MODEL: tinyllama
+      OLLAMA_HOST: 0.0.0.0:11434
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama-data:/root/.ollama
+    restart: unless-stopped
+
+  api:
+    build:
+      context: ./api
+    container_name: genai-api
+    depends_on:
+      - llm
+    environment:
+      APP_NAME: genai-api
+      LOG_LEVEL: INFO
+      LLM_URL: http://llm:11434
+      MODEL_NAME: tinyllama
+    ports:
+      - "8000:8000"
+    restart: unless-stopped
+
+  ui:
+    build:
+      context: ./ui
+    container_name: genai-ui
+    depends_on:
+      - api
+    environment:
+      API_UPSTREAM: http://api:8000
+    ports:
+      - "8080:80"
+    restart: unless-stopped
+
+volumes:
+  # The Ollama model cache is kept on a named volume to avoid re-downloading the model on each run.
+  ollama-data:

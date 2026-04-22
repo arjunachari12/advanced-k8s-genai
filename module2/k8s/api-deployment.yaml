@@ -1,0 +1,62 @@
+# The API talks to Ollama through an internal ClusterIP service.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api
+  namespace: genai
+  labels:
+    app: api
+    tier: backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: api
+      tier: backend
+  template:
+    metadata:
+      labels:
+        app: api
+        tier: backend
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8000"
+        prometheus.io/path: /metrics
+    spec:
+      containers:
+        - name: api
+          image: arjunachari12/genai-api:1.0.0
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: APP_NAME
+              value: genai-api
+            - name: LOG_LEVEL
+              value: INFO
+            - name: LLM_URL
+              value: http://llm-service.genai.svc.cluster.local:11434
+            - name: MODEL_NAME
+              value: tinyllama
+            - name: OLLAMA_TIMEOUT_SECONDS
+              value: "300"
+          ports:
+            - containerPort: 8000
+              name: http
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: http
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: http
+            initialDelaySeconds: 20
+            periodSeconds: 20
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
