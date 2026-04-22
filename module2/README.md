@@ -56,9 +56,14 @@ The manifests in this module already reference published images, but students ca
 ```bash
 cd module2
 
-docker build -t arjunachari12/genai-ui:1.0.1 ./ui
+docker build -t sham/genai-ui:1.0.1 ./ui
 docker build -t arjunachari12/genai-api:1.0.0 ./api
 docker build -t arjunachari12/genai-ollama:1.0.0 ./llm
+
+docker push arjunachari12/genai-ui:1.0.1
+docker push arjunachari12/genai-api:1.0.0
+docker push arjunachari12/genai-ollama:1.0.0
+
 ```
 
 If you want to use only local KIND images instead of pulling from a registry, retag them and load them into KIND:
