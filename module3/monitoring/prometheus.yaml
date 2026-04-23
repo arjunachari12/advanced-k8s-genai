@@ -23,7 +23,7 @@ data:
         metrics_path: /metrics
         static_configs:
           - targets:
-              - api-service.genai.svc.cluster.local:8000
+              - genai-genai-platform-api.genai.svc.cluster.local:8000
             labels:
               service: genai-api
               namespace: genai

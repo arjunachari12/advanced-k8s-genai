@@ -1,0 +1,18 @@
+namespace:
+  create: false
+
+llm:
+  model: tinyllama
+  persistence:
+    size: 8Gi
+
+api:
+  logLevel: DEBUG
+
+ui:
+  service:
+    type: NodePort
+    nodePort: 30081
+
+ingress:
+  enabled: false

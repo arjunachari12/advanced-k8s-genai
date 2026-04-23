@@ -1,0 +1,6 @@
+apiVersion: v2
+name: genai-platform
+description: Reusable Helm chart for the GenAI platform training app
+type: application
+version: 0.1.0
+appVersion: "1.0.1"

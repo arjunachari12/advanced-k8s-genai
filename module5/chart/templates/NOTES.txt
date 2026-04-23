@@ -1,0 +1,12 @@
+1. Check the release status:
+   helm status {{ .Release.Name }} -n {{ .Release.Namespace }}
+
+2. Check workloads:
+   kubectl get pods,svc -n {{ .Release.Namespace }}
+
+3. Access the UI:
+   {{- if eq .Values.ui.service.type "NodePort" }}
+   kubectl -n {{ .Release.Namespace }} get svc {{ include "genai-platform.componentName" (dict "root" . "component" "ui") }}
+   {{- else }}
+   kubectl -n {{ .Release.Namespace }} port-forward svc/{{ include "genai-platform.componentName" (dict "root" . "component" "ui") }} 8080:{{ .Values.ui.service.port }}
+   {{- end }}

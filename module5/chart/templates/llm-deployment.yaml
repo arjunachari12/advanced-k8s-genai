@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "genai-platform.componentName" (dict "root" . "component" "llm") }}
+  namespace: {{ include "genai-platform.namespace" . }}
+  labels:
+    {{- include "genai-platform.labels" . | nindent 4 }}
+    {{- include "genai-platform.componentLabels" (dict "root" . "component" "llm") | nindent 4 }}
+spec:
+  replicas: {{ .Values.llm.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "genai-platform.componentLabels" (dict "root" . "component" "llm") | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "genai-platform.componentLabels" (dict "root" . "component" "llm") | nindent 8 }}
+    spec:
+      containers:
+        - name: ollama
+          image: "{{ .Values.llm.image.repository }}:{{ .Values.llm.image.tag }}"
+          imagePullPolicy: {{ .Values.global.imagePullPolicy }}
+          command: ["/bin/sh", "/entrypoint.sh"]
+          env:
+            - name: OLLAMA_MODEL
+              value: {{ .Values.llm.model | quote }}
+            - name: OLLAMA_HOST
+              value: 0.0.0.0:11434
+          ports:
+            - name: http
+              containerPort: 11434
+          {{- if .Values.llm.persistence.enabled }}
+          volumeMounts:
+            - name: ollama-models
+              mountPath: /root/.ollama
+          {{- end }}
+          readinessProbe:
+            httpGet:
+              path: /api/tags
+              port: http
+            initialDelaySeconds: {{ .Values.llm.readinessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.llm.readinessProbe.periodSeconds }}
+          livenessProbe:
+            httpGet:
+              path: /api/tags
+              port: http
+            initialDelaySeconds: {{ .Values.llm.livenessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.llm.livenessProbe.periodSeconds }}
+          resources:
+            {{- toYaml .Values.llm.resources | nindent 12 }}
+      {{- if .Values.llm.persistence.enabled }}
+      volumes:
+        - name: ollama-models
+          persistentVolumeClaim:
+            claimName: {{ include "genai-platform.componentName" (dict "root" . "component" "ollama-models") }}
+      {{- end }}

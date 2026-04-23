@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "genai-platform.componentName" (dict "root" . "component" "api") }}
+  namespace: {{ include "genai-platform.namespace" . }}
+  labels:
+    {{- include "genai-platform.labels" . | nindent 4 }}
+    {{- include "genai-platform.componentLabels" (dict "root" . "component" "api") | nindent 4 }}
+spec:
+  replicas: {{ .Values.api.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "genai-platform.componentLabels" (dict "root" . "component" "api") | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "genai-platform.componentLabels" (dict "root" . "component" "api") | nindent 8 }}
+      {{- if .Values.api.metrics.enabled }}
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: {{ .Values.api.metrics.port | quote }}
+        prometheus.io/path: {{ .Values.api.metrics.path | quote }}
+      {{- end }}
+    spec:
+      containers:
+        - name: api
+          image: "{{ .Values.api.image.repository }}:{{ .Values.api.image.tag }}"
+          imagePullPolicy: {{ .Values.global.imagePullPolicy }}
+          env:
+            - name: APP_NAME
+              value: {{ .Values.api.appName | quote }}
+            - name: LOG_LEVEL
+              value: {{ .Values.api.logLevel | quote }}
+            - name: LLM_URL
+              value: {{ include "genai-platform.llmServiceUrl" . | quote }}
+            - name: MODEL_NAME
+              value: {{ .Values.api.modelName | quote }}
+            - name: OLLAMA_TIMEOUT_SECONDS
+              value: {{ .Values.api.ollamaTimeoutSeconds | quote }}
+          ports:
+            - name: http
+              containerPort: 8000
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: http
+            initialDelaySeconds: {{ .Values.api.readinessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.api.readinessProbe.periodSeconds }}
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: http
+            initialDelaySeconds: {{ .Values.api.livenessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.api.livenessProbe.periodSeconds }}
+          resources:
+            {{- toYaml .Values.api.resources | nindent 12 }}

@@ -1,0 +1,100 @@
+namespace:
+  create: false
+  labels:
+    app.kubernetes.io/part-of: genai-platform
+
+nameOverride: ""
+fullnameOverride: ""
+
+global:
+  imagePullPolicy: IfNotPresent
+
+llm:
+  replicaCount: 1
+  image:
+    repository: arjunachari12/genai-ollama
+    tag: "1.0.0"
+  model: tinyllama
+  service:
+    type: ClusterIP
+    port: 11434
+  persistence:
+    enabled: true
+    accessModes:
+      - ReadWriteOnce
+    size: 8Gi
+  resources:
+    requests:
+      cpu: 250m
+      memory: 1Gi
+    limits:
+      cpu: "1"
+      memory: 2Gi
+  readinessProbe:
+    initialDelaySeconds: 20
+    periodSeconds: 15
+  livenessProbe:
+    initialDelaySeconds: 40
+    periodSeconds: 30
+
+api:
+  replicaCount: 1
+  image:
+    repository: arjunachari12/genai-api
+    tag: "1.0.0"
+  service:
+    type: ClusterIP
+    port: 8000
+  appName: genai-api
+  logLevel: INFO
+  modelName: tinyllama
+  ollamaTimeoutSeconds: "300"
+  metrics:
+    enabled: true
+    path: /metrics
+    port: "8000"
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+  readinessProbe:
+    initialDelaySeconds: 10
+    periodSeconds: 10
+  livenessProbe:
+    initialDelaySeconds: 20
+    periodSeconds: 20
+
+ui:
+  replicaCount: 1
+  image:
+    repository: arjunachari12/genai-ui
+    tag: "1.0.1"
+  service:
+    type: NodePort
+    port: 80
+    nodePort: 30080
+  resources:
+    requests:
+      cpu: 50m
+      memory: 64Mi
+    limits:
+      cpu: 200m
+      memory: 128Mi
+  readinessProbe:
+    initialDelaySeconds: 5
+    periodSeconds: 10
+  livenessProbe:
+    initialDelaySeconds: 15
+    periodSeconds: 20
+
+ingress:
+  enabled: true
+  className: nginx
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+  host: genai.local
+  path: /
+  pathType: Prefix

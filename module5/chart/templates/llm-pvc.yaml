@@ -1,0 +1,16 @@
+{{- if .Values.llm.persistence.enabled }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ include "genai-platform.componentName" (dict "root" . "component" "ollama-models") }}
+  namespace: {{ include "genai-platform.namespace" . }}
+  labels:
+    {{- include "genai-platform.labels" . | nindent 4 }}
+    {{- include "genai-platform.componentLabels" (dict "root" . "component" "llm") | nindent 4 }}
+spec:
+  accessModes:
+    {{- toYaml .Values.llm.persistence.accessModes | nindent 4 }}
+  resources:
+    requests:
+      storage: {{ .Values.llm.persistence.size }}
+{{- end }}
