@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: module4-reference-only
+  namespace: monitoring
+data:
+  README: |
+    Module 4 uses the Prometheus scrape targets defined in module3/monitoring/prometheus.yaml.
+    Students do not need Prometheus Operator resources such as PodMonitor or PrometheusRule
+    for this workshop repository.

@@ -1,0 +1,23 @@
+prometheus:
+  url: http://prometheus.monitoring.svc
+  port: 9090
+  path: ""
+
+rules:
+  default: false
+  custom:
+    - seriesQuery: 'http_request_duration_seconds_bucket{namespace!="",handler="/generate",method="POST"}'
+      resources:
+        overrides:
+          namespace:
+            resource: namespace
+      name:
+        matches: "^http_request_duration_seconds_bucket$"
+        as: "genai_api_latency_p95_seconds"
+      metricsQuery: >
+        histogram_quantile(
+          0.95,
+          sum(
+            rate(http_request_duration_seconds_bucket{<<.LabelMatchers>>,handler="/generate",method="POST"}[2m])
+          ) by (le, namespace)
+        )
