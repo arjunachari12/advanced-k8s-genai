@@ -1,4 +1,4 @@
-# Exercise 2: Build and Run a Read-Only Kubernetes MCP Server
+# Exercise 3: Build and Run a Read-Only Kubernetes MCP Server
 
 This exercise is the core of Module 8.
 

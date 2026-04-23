@@ -18,3 +18,4 @@ services:
       - ollama
     environment:
       - OLLAMA_HOST=ollama
+      - OLLAMA_DEFAULT_MODEL=tinyllama

@@ -1,16 +1,18 @@
-# Module 8: AI-Augmented Kubernetes with kubectl-ai and MCP
+# Module 8: AI-Augmented Kubernetes with Local Ollama, kubectl-ai, and MCP
 
-This module is easier to understand if you think of it as two connected labs:
+This module works best as a three-step story:
 
-1. use `kubectl-ai` as an AI assistant for Kubernetes work
-2. build and run your own read-only Kubernetes MCP server so AI tooling can safely inspect cluster state
+1. start with a local Ollama-backed endpoint so students can demo AI without needing a hosted API key
+2. use `kubectl-ai` as an AI assistant for Kubernetes work
+3. build and run your own read-only Kubernetes MCP server so AI tooling can safely inspect cluster state
 
 ## What Students Build
 
 Students do not build a Kubernetes application in this module. They build an AI-assisted operations workflow.
 
-The module has two main pieces:
+The module has three connected pieces:
 
+- a local Ollama bridge that exposes an OpenAI-compatible API on the laptop
 - `kubectl-ai`, which lets students ask for manifests, explanations, and troubleshooting help in natural language
 - a custom read-only MCP server, which exposes a small set of safe Kubernetes tools such as listing nodes, namespaces, pods, logs, and events
 
@@ -33,14 +35,14 @@ This helps students see:
 
 ## Module Flow
 
-1. `01-kubectl-ai-basics.md`
-2. `02-build-and-run-mcp-server.md`
-3. `03-optional-local-ollama.md`
+1. `01-local-ollama-foundation.md`
+2. `02-kubectl-ai-basics.md`
+3. `03-build-and-run-mcp-server.md`
 
 ## Assets In This Module
 
 - `mcp-server/` - Python MCP server, sample client, Dockerfile, and Kubernetes manifests
-- `local-mcp-ollama/` - optional OpenAI-compatible bridge to Ollama for local/private experiments
+- `local-mcp-ollama/` - OpenAI-compatible bridge to Ollama for local/private demos
 
 ## Validated Commands
 
@@ -70,9 +72,9 @@ docker compose -f module8/local-mcp-ollama/docker-compose.yaml config
 
 If you want the shortest path through the module:
 
-1. Follow `01-kubectl-ai-basics.md` to install and try `kubectl-ai`.
-2. Follow `02-build-and-run-mcp-server.md` to deploy the read-only MCP server and connect to it.
-3. Optionally follow `03-optional-local-ollama.md` to replace a hosted provider with a local Ollama backend.
+1. Follow `01-local-ollama-foundation.md` to stand up a local AI backend that works without a hosted provider key.
+2. Follow `02-kubectl-ai-basics.md` to install and try `kubectl-ai` against either local Ollama, Gemini, or OpenAI.
+3. Follow `03-build-and-run-mcp-server.md` to deploy the read-only MCP server and connect AI tooling to live cluster data.
 
 ## Instructor Goals
 

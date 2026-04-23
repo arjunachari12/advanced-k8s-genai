@@ -2,7 +2,7 @@
 
 This example exposes a few **read-only Kubernetes tools** over MCP so an AI assistant can inspect cluster state safely.
 
-This folder is the implementation used by `../02-build-and-run-mcp-server.md`.
+This folder is the implementation used by `../03-build-and-run-mcp-server.md`.
 
 ## What This Code Does
 
