@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: genai-rollout-load
+  namespace: genai-rollouts
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: genai-rollout-load
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: genai-rollout-load
+    spec:
+      containers:
+        - name: curl
+          image: curlimages/curl:8.7.1
+          command:
+            - /bin/sh
+            - -c
+            - |
+              while true; do
+                curl -s -X POST http://genai-api.genai-rollouts.svc.cluster.local:8000/generate \
+                  -H "Content-Type: application/json" \
+                  -d '{"product":"GitOps canary rollout","audience":"platform engineers"}' > /dev/null || true
+                sleep 1
+              done

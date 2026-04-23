@@ -60,6 +60,7 @@ kubectl get pods -n genai-staging -w
 
 - If custom metrics are missing, re-check the Prometheus Adapter values and APIService status.
 - If the API never scales, verify the load generator is running and Prometheus has recent request data.
+- Expect scale-up to take roughly 1 to 2 minutes after traffic starts because Prometheus and KEDA both rely on recent time windows, not instant samples.
 - If KEDA is installed but idle, inspect `kubectl logs -n keda deploy/keda-operator`.
 - This repo uses the plain Prometheus Deployment from Module 3, not Prometheus Operator CRDs such as `PodMonitor` or `PrometheusRule`.
 

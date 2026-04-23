@@ -2,7 +2,7 @@
 
 ## Objective
 
-Generate enough API traffic to increase p95 latency and observe KEDA scale the backend.
+Generate enough API traffic to increase average latency and observe KEDA scale the backend.
 
 ## Files Used In This Exercise
 
@@ -45,6 +45,12 @@ genai_api_latency_avg_seconds{namespace="genai-staging"}
 
 You should see the metric rise as the Job sends repeated `POST /generate` requests.
 
+Important note:
+
+- scale-up is not immediate
+- expect roughly 1 to 2 minutes before the HPA and Deployment react
+- that delay comes from Prometheus scrape timing, the `rate(...[2m])` query window, and KEDA polling
+
 ### 4. Observe scale-up
 
 During sustained latency, check:
@@ -73,7 +79,7 @@ kubectl delete job genai-api-load-generator -n genai-staging
 ## Expected Outcome
 
 - The load generator produces repeated API calls
-- p95 latency rises above the threshold
+- average latency rises above the threshold
 - KEDA increases the API replica count
 - Replicas return toward the minimum count after traffic stops
 

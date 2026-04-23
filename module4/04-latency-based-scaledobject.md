@@ -44,6 +44,8 @@ This keeps the trigger centered on latency while allowing the signal to fall bac
 
 It scales when the effective value rises above `0.9`.
 
+In practice, students should expect a short delay before scale-up because the query uses a `2m` Prometheus rate window and KEDA polls every `15` seconds.
+
 ## Expected Outcome
 
 - A `ScaledObject` named `genai-api-latency` exists

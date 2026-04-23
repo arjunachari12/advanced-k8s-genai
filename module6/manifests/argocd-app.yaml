@@ -1,0 +1,28 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: genai-gitops
+  namespace: argocd
+spec:
+  project: default
+  source:
+    # This default points at the current workshop repository.
+    # If you are running from your own fork, replace repoURL and targetRevision.
+    repoURL: https://github.com/arjunachari12/advanced-k8s-genai.git
+    path: module5/chart
+    targetRevision: main
+    helm:
+      valueFiles:
+        - values-staging.yaml
+      values: |
+        ui:
+          service:
+            type: ClusterIP
+        ingress:
+          enabled: false
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: genai-gitops
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true

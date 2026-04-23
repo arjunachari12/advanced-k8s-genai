@@ -1,0 +1,75 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AnalysisTemplate
+metadata:
+  name: genai-api-success
+  namespace: genai-rollouts
+spec:
+  metrics:
+    - name: success-rate
+      interval: 20s
+      count: 3
+      failureLimit: 1
+      successCondition: result[0] >= 0.90
+      provider:
+        prometheus:
+          address: http://prometheus.monitoring.svc.cluster.local:9090
+          query: |
+            (
+              (
+                sum(
+                  rate(
+                    http_requests_total{
+                      namespace="genai-rollouts",
+                      handler="/generate",
+                      method="POST",
+                      status!~"5.."
+                    }[1m]
+                  )
+                ) + 1
+              )
+              /
+              (
+                sum(
+                  rate(
+                    http_requests_total{
+                      namespace="genai-rollouts",
+                      handler="/generate",
+                      method="POST"
+                    }[1m]
+                  )
+                ) + 1
+              )
+            ) or on() vector(1)
+    - name: average-latency
+      interval: 20s
+      count: 3
+      failureLimit: 1
+      successCondition: result[0] <= 60
+      provider:
+        prometheus:
+          address: http://prometheus.monitoring.svc.cluster.local:9090
+          query: |
+            (
+              sum(
+                rate(
+                  http_request_duration_seconds_sum{
+                    namespace="genai-rollouts",
+                    handler="/generate",
+                    method="POST"
+                  }[1m]
+                )
+              )
+              /
+              clamp_min(
+                sum(
+                  rate(
+                    http_request_duration_seconds_count{
+                      namespace="genai-rollouts",
+                      handler="/generate",
+                      method="POST"
+                    }[1m]
+                  )
+                ),
+                1
+              )
+            ) or on() vector(0)
