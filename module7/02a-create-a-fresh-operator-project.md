@@ -7,7 +7,7 @@ This does not modify the committed `module7` project. It creates a separate disp
 ## Create a Scratch Workspace
 
 ```bash
-export PATH="/home/arjun/.local/bin:/home/arjun/.local/lib/go-toolchain/go/bin:$PATH"
+export PATH="$HOME/.local/bin:$HOME/.local/lib/go-toolchain/go/bin:$PATH"
 
 mkdir -p /tmp/module7-operator-lab
 cd /tmp/module7-operator-lab
@@ -64,7 +64,7 @@ Pay attention to:
 When you are done exploring the scratch scaffold, return to the committed module:
 
 ```bash
-cd /home/arjun/advanced-k8s-genai/module7
+cd <repo-root>/module7
 ```
 
 The checked-in `module7` project already includes the custom API fields, controller logic, samples, and tests used in the rest of this lab.

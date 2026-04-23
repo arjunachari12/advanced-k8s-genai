@@ -35,13 +35,13 @@ go version
 ### Linux or Windows WSL
 
 ```bash
-mkdir -p /home/$USER/.local/lib
+mkdir -p "$HOME/.local/lib"
 cd /tmp
 
 curl -LO https://go.dev/dl/go1.26.1.linux-amd64.tar.gz
-rm -rf /home/$USER/.local/lib/go-toolchain
-mkdir -p /home/$USER/.local/lib/go-toolchain
-tar -C /home/$USER/.local/lib/go-toolchain --strip-components=1 -xzf go1.26.1.linux-amd64.tar.gz
+rm -rf "$HOME/.local/lib/go-toolchain"
+mkdir -p "$HOME/.local/lib/go-toolchain"
+tar -C "$HOME/.local/lib/go-toolchain" --strip-components=1 -xzf go1.26.1.linux-amd64.tar.gz
 ```
 
 Add Go to your shell:
@@ -66,10 +66,10 @@ operator-sdk version
 ### Linux or Windows WSL
 
 ```bash
-mkdir -p /home/$USER/.local/bin
-curl -Lo /home/$USER/.local/bin/operator-sdk \
+mkdir -p "$HOME/.local/bin"
+curl -Lo "$HOME/.local/bin/operator-sdk" \
   https://github.com/operator-framework/operator-sdk/releases/download/v1.42.2/operator-sdk_linux_amd64
-chmod +x /home/$USER/.local/bin/operator-sdk
+chmod +x "$HOME/.local/bin/operator-sdk"
 ```
 
 Add it to your shell if needed:

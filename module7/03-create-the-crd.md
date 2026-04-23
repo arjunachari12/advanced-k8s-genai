@@ -30,7 +30,7 @@ The `AIAppStatus` describes the observed state:
 
 ```bash
 cd module7
-export PATH="/home/arjun/.local/bin:/home/arjun/.local/lib/go-toolchain/go/bin:$PATH"
+export PATH="$HOME/.local/bin:$HOME/.local/lib/go-toolchain/go/bin:$PATH"
 
 make manifests generate
 ```

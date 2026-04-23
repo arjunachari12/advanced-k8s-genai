@@ -8,7 +8,7 @@ Do not rerun these scaffold commands inside the committed `module7` folder unles
 
 ```bash
 cd module7
-export PATH="/home/arjun/.local/bin:/home/arjun/.local/lib/go-toolchain/go/bin:$PATH"
+export PATH="$HOME/.local/bin:$HOME/.local/lib/go-toolchain/go/bin:$PATH"
 ```
 
 ## Recreate the Scaffold From Scratch

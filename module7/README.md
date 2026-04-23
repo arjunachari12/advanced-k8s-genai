@@ -94,7 +94,7 @@ If students want to practice scaffolding from zero, use `02a-create-a-fresh-oper
 The module was validated on the shared KIND cluster with:
 
 ```bash
-export PATH="/home/arjun/.local/bin:/home/arjun/.local/lib/go-toolchain/go/bin:$PATH"
+export PATH="$HOME/.local/bin:$HOME/.local/lib/go-toolchain/go/bin:$PATH"
 
 make build
 make test
@@ -110,7 +110,7 @@ If you want to jump straight to the runnable lab:
 
 ```bash
 cd module7
-export PATH="/home/arjun/.local/bin:/home/arjun/.local/lib/go-toolchain/go/bin:$PATH"
+export PATH="$HOME/.local/bin:$HOME/.local/lib/go-toolchain/go/bin:$PATH"
 
 kubectl create namespace ai-operators-lab --dry-run=client -o yaml | kubectl apply -f -
 make build
