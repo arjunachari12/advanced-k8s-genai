@@ -2,11 +2,51 @@
 
 This module uses a real Go operator project so students can move from Kubernetes theory to a working controller.
 
+## What We Are Building
+
+The sample custom resource in this module is `AIApp`.
+
+`AIApp` is a higher-level application object for the GenAI API workload used in earlier modules. Instead of asking users to hand-author a `Deployment`, `Service`, probes, labels, and environment variables every time, the module lets them define one Kubernetes-native object that describes the app they want to run.
+
+An `AIApp` can express things like:
+
+- which container image to run
+- how many replicas to create
+- which model name to pass into the workload
+- which internal LLM endpoint the app should call
+- how the service should be exposed
+
+The controller then translates that intent into the lower-level Kubernetes resources required to run the workload safely.
+
 The custom resource is named `AIApp`. Each `AIApp` object manages:
 
 - one `Deployment`
 - one `Service`
 - status conditions that report reconciliation progress
+
+## Why Build This As A CRD?
+
+This workload is a good CRD example because it has repeated operational rules that are easy to get wrong when written by hand.
+
+Without a CRD, every team or student would need to remember:
+
+- the right container image and port
+- the expected environment variables like `MODEL_NAME` and `LLM_URL`
+- the probe configuration
+- the labels and selectors that keep the `Deployment` and `Service` connected
+- how to inspect readiness and rollout state across multiple objects
+
+By defining `AIApp` as a custom resource, we move those rules into the platform itself. Users describe the application they want, and the controller consistently creates the correct Kubernetes objects.
+
+## Benefits Of Using A CRD And Operator
+
+- Simpler user experience: students create one `AIApp` instead of assembling several YAML resources by hand.
+- Safer defaults: the controller can inject known-good defaults for ports, log level, service type, and model wiring.
+- Consistency: every deployed app follows the same labeling, service, and health-check patterns.
+- Reconciliation: if a managed `Deployment` or `Service` drifts, the controller notices and repairs it.
+- Better status reporting: the custom resource can expose app-specific status like `phase`, `readyReplicas`, `deploymentName`, and `serviceName`.
+- Platform abstraction: application users work with business intent, while the operator handles Kubernetes implementation details.
+- Reuse: once the pattern is in code, every future `AIApp` benefits from the same automation.
 
 ## Learning Outcomes
 
