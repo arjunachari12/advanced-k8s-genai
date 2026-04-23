@@ -20,7 +20,7 @@ argocd app get genai-gitops --grpc-web
 ### 2. Introduce drift
 
 ```bash
-kubectl scale deployment genai-genai-platform-api -n genai-gitops --replicas=3
+kubectl scale deployment genai-gitops-genai-platform-api -n genai-gitops --replicas=3
 ```
 
 ### 3. Inspect the diff

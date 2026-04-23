@@ -17,7 +17,7 @@ Create an ArgoCD `Application` that deploys the GenAI Helm chart into a dedicate
 ```bash
 argocd login localhost:8081 \
   --username admin \
-  --password "$(kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath='{.data.password}' | base64 -d)" \
+  --password "t21rx5dM0rO2kYs4" \
   --grpc-web \
   --insecure
 ```

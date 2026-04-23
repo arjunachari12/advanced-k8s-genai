@@ -8,6 +8,7 @@ llm:
 
 api:
   logLevel: DEBUG
+  replicaCount: 5
 
 ui:
   service:
