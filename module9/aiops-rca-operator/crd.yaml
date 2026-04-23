@@ -1,0 +1,40 @@
+
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: rcarequests.aiops.example.com
+spec:
+  group: aiops.example.com
+  names:
+    kind: RCARequest
+    plural: rcarequests
+    singular: rcarequest
+    shortNames:
+      - rca
+  scope: Namespaced
+  versions:
+    - name: v1
+      served: true
+      storage: true
+      schema:
+        openAPIV3Schema:
+          type: object
+          properties:
+            spec:
+              type: object
+              properties:
+                namespace:
+                  type: string
+                podName:
+                  type: string
+            status:
+              type: object
+              properties:
+                phase:
+                  type: string
+                plan:
+                  type: string
+                analysis:
+                  type: string
+                fix:
+                  type: string

@@ -1,0 +1,25 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: ai-k8s-assistant
+  namespace: genai
+spec:
+  backoffLimit: 0
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+      - name: ai-k8s-assistant
+        image: ai-k8s-assistant:0.1.0
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: MCP_SERVER_URL
+          value: "http://mcp-server-svc.genai.svc.cluster.local:80/sse"
+        - name: OLLAMA_BASE_URL
+          value: "http://ollama.genai.svc.cluster.local:11434"
+        - name: OLLAMA_MODEL
+          value: "tinyllama"
+        - name: TARGET_NAMESPACE
+          value: "genai"
+        - name: ASSISTANT_PROMPT
+          value: "Act like a beginner-friendly kubectl-ai assistant. Inspect the genai namespace, identify unhealthy pods, explain why they are unhealthy, and suggest the next kubectl command."

@@ -1,0 +1,5 @@
+kopf
+kubernetes
+langgraph
+langchain-ollama
+python-dotenv

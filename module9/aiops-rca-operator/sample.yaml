@@ -1,0 +1,9 @@
+
+apiVersion: aiops.example.com/v1
+kind: RCARequest
+metadata:
+  name: sample-rca
+  namespace: genai
+spec:
+  namespace: genai
+  podName: replace-with-real-pod-name

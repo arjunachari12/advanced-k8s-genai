@@ -1,6 +1,6 @@
 __pycache__/
 *.pyc
 .DS_Store
-module8/
-module9/
 module8/local-mcp-ollama/ollama_data/
+module7/bin/
+module7/cover.out

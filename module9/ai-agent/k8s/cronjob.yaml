@@ -1,0 +1,27 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: ai-k8s-assistant
+  namespace: genai
+spec:
+  schedule: "*/15 * * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: OnFailure
+          containers:
+          - name: ai-k8s-assistant
+            image: ai-k8s-assistant:0.1.0
+            imagePullPolicy: IfNotPresent
+            env:
+            - name: MCP_SERVER_URL
+              value: "http://mcp-server-svc.genai.svc.cluster.local:80/sse"
+            - name: OLLAMA_BASE_URL
+              value: "http://ollama.genai.svc.cluster.local:11434"
+            - name: OLLAMA_MODEL
+              value: "tinyllama"
+            - name: TARGET_NAMESPACE
+              value: "genai"
+            - name: ASSISTANT_PROMPT
+              value: "Inspect the genai namespace. Use tools first and summarize any failures with the likely fix."

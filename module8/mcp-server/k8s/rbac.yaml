@@ -1,0 +1,30 @@
+# 1. ServiceAccount for the MCP Server Pod
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: mcp-server-sa
+  namespace: genai
+---
+# 2. ClusterRole defining what the MCP server can read
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: mcp-cluster-reader
+rules:
+- apiGroups: [""]
+  resources: ["nodes", "namespaces", "pods", "events", "pods/log"]
+  verbs: ["get", "watch", "list"]
+---
+# 3. Bind the ClusterRole to the ServiceAccount
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: mcp-cluster-reader-binding
+subjects:
+- kind: ServiceAccount
+  name: mcp-server-sa
+  namespace: genai
+roleRef:
+  kind: ClusterRole
+  name: mcp-cluster-reader
+  apiGroup: rbac.authorization.k8s.io
