@@ -1,0 +1,13 @@
+apiVersion: ai.workshop.io/v1alpha1
+kind: AIApp
+metadata:
+  name: aiapp-sample
+  namespace: ai-operators-lab
+spec:
+  image: arjunachari12/genai-api:1.0.0
+  replicas: 1
+  port: 8000
+  serviceType: ClusterIP
+  modelName: tinyllama
+  llmUrl: http://genai-genai-platform-llm.genai-staging.svc.cluster.local:11434
+  logLevel: INFO

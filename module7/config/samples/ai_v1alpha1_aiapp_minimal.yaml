@@ -1,0 +1,7 @@
+apiVersion: ai.workshop.io/v1alpha1
+kind: AIApp
+metadata:
+  name: aiapp-defaults-demo
+  namespace: ai-operators-lab
+spec:
+  replicas: 1
