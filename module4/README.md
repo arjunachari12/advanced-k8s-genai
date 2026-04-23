@@ -4,7 +4,7 @@
 
 1. Install Prometheus Adapter
 2. Install KEDA
-3. Create a reusable p95 latency metric from Prometheus
+3. Create a reusable latency metric from Prometheus
 4. Expose that metric through the Kubernetes custom metrics API
 5. Scale the FastAPI API deployment when latency rises
 6. Generate traffic and observe the scale-up and scale-down flow

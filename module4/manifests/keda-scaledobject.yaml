@@ -19,7 +19,7 @@ spec:
     - type: prometheus
       metadata:
         serverAddress: http://prometheus.monitoring.svc.cluster.local:9090
-        metricName: genai_api_latency_p95_seconds
-        query: histogram_quantile(0.95, sum(rate(http_request_duration_seconds_bucket{namespace="genai-staging",handler="/generate",method="POST"}[2m])) by (le))
+        metricName: genai_api_latency_avg_seconds
+        query: sum(rate(http_request_duration_seconds_sum{namespace="genai-staging",handler="/generate",method="POST"}[2m])) by (namespace) / sum(rate(http_request_duration_seconds_count{namespace="genai-staging",handler="/generate",method="POST"}[2m])) by (namespace)
         threshold: "0.9"
         activationThreshold: "0.5"

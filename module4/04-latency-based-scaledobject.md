@@ -2,7 +2,7 @@
 
 ## Objective
 
-Create a KEDA `ScaledObject` that increases API replicas when the p95 latency metric stays above the threshold.
+Create a KEDA `ScaledObject` that increases API replicas when the average request latency stays above the threshold.
 
 ## Files Used In This Exercise
 
@@ -35,7 +35,9 @@ kubectl describe scaledobject genai-api-latency -n genai-staging
 This ScaledObject queries:
 
 ```text
-histogram_quantile(0.95, sum(rate(http_request_duration_seconds_bucket{namespace="genai-staging",handler="/generate",method="POST"}[2m])) by (le))
+sum(rate(http_request_duration_seconds_sum{namespace="genai-staging",handler="/generate",method="POST"}[2m])) by (namespace)
+/
+sum(rate(http_request_duration_seconds_count{namespace="genai-staging",handler="/generate",method="POST"}[2m])) by (namespace)
 ```
 
 This keeps the trigger centered on latency while allowing the signal to fall back down as request traffic drains away.

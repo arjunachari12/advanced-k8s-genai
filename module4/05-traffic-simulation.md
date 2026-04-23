@@ -40,7 +40,7 @@ kubectl logs -n genai-staging job/genai-api-load-generator
 If Prometheus is port-forwarded, query:
 
 ```text
-genai_api_latency_p95_seconds{namespace="genai-staging"}
+genai_api_latency_avg_seconds{namespace="genai-staging"}
 ```
 
 You should see the metric rise as the Job sends repeated `POST /generate` requests.

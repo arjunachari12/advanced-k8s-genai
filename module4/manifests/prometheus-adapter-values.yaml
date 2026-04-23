@@ -6,18 +6,23 @@ prometheus:
 rules:
   default: false
   custom:
-    - seriesQuery: 'http_request_duration_seconds_bucket{namespace!="",handler="/generate",method="POST"}'
+    - seriesQuery: 'http_request_duration_seconds_count{namespace!="",handler="/generate",method="POST"}'
       resources:
         overrides:
           namespace:
             resource: namespace
       name:
-        matches: "^http_request_duration_seconds_bucket$"
-        as: "genai_api_latency_p95_seconds"
+        matches: "^http_request_duration_seconds_count$"
+        as: "genai_api_latency_avg_seconds"
       metricsQuery: >
-        histogram_quantile(
-          0.95,
+        (
           sum(
-            rate(http_request_duration_seconds_bucket{<<.LabelMatchers>>,handler="/generate",method="POST"}[2m])
-          ) by (le, namespace)
+            rate(http_request_duration_seconds_sum{<<.LabelMatchers>>,handler="/generate",method="POST"}[2m])
+          ) by (namespace)
+        )
+        /
+        (
+          sum(
+            rate(http_request_duration_seconds_count{<<.LabelMatchers>>,handler="/generate",method="POST"}[2m])
+          ) by (namespace)
         )

@@ -2,7 +2,7 @@
 
 ## Objective
 
-Expose API p95 latency through Prometheus Adapter as a Kubernetes custom metric.
+Expose API latency through Prometheus Adapter as a Kubernetes custom metric.
 
 ## Files Used In This Exercise
 
@@ -62,20 +62,22 @@ kubectl -n monitoring port-forward svc/prometheus 9090:9090
 In the Prometheus UI, run:
 
 ```text
-histogram_quantile(0.95, sum(rate(http_request_duration_seconds_bucket{namespace="genai-staging",handler="/generate",method="POST"}[2m])) by (le))
+sum(rate(http_request_duration_seconds_sum{namespace="genai-staging",handler="/generate",method="POST"}[2m])) by (namespace)
+/
+sum(rate(http_request_duration_seconds_count{namespace="genai-staging",handler="/generate",method="POST"}[2m])) by (namespace)
 ```
 
 ### 4. Query the custom metric through Kubernetes
 
 ```bash
 kubectl get --raw \
-  "/apis/custom.metrics.k8s.io/v1beta1/namespaces/genai-staging/metrics/genai_api_latency_p95_seconds" | python3 -m json.tool
+  "/apis/custom.metrics.k8s.io/v1beta1/namespaces/genai-staging/metrics/genai_api_latency_avg_seconds" | python3 -m json.tool
 ```
 
 ## Expected Outcome
 
 - Prometheus scrapes the staging API service
-- Prometheus Adapter exposes `genai_api_latency_p95_seconds` through `custom.metrics.k8s.io`
+- Prometheus Adapter exposes `genai_api_latency_avg_seconds` through `custom.metrics.k8s.io`
 
 ## Troubleshooting
 
