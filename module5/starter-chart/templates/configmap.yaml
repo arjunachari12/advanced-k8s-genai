@@ -1,0 +1,55 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "starter-chart.fullname" . }}-page
+  labels:
+    {{- include "starter-chart.labels" . | nindent 4 }}
+data:
+  index.html: |
+    <!DOCTYPE html>
+    <html lang="en">
+      <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>{{ .Values.page.title }}</title>
+        <style>
+          body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            min-height: 100vh;
+            display: grid;
+            place-items: center;
+            background: linear-gradient(135deg, #f5f7fa, #d7e3f4);
+            color: #1f2937;
+          }
+          main {
+            max-width: 720px;
+            padding: 32px;
+            background: white;
+            border-radius: 18px;
+            box-shadow: 0 20px 50px rgba(15, 23, 42, 0.12);
+          }
+          h1 {
+            margin-top: 0;
+          }
+          p {
+            line-height: 1.6;
+          }
+          code {
+            background: #eef2ff;
+            padding: 2px 6px;
+            border-radius: 6px;
+          }
+        </style>
+      </head>
+      <body>
+        <main>
+          <h1>{{ .Values.page.heading }}</h1>
+          <p>{{ .Values.page.message }}</p>
+          <p><code>Release:</code> {{ .Release.Name }}</p>
+          <p><code>Namespace:</code> {{ .Release.Namespace }}</p>
+          <p><code>Chart:</code> {{ .Chart.Name }}-{{ .Chart.Version }}</p>
+          <p>{{ .Values.page.footer }}</p>
+        </main>
+      </body>
+    </html>

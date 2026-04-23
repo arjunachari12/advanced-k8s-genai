@@ -25,6 +25,8 @@ This module converts the raw manifests from Module 2 into a reusable Helm chart:
 - `chart/values-staging.yaml`
 - `chart/values-production.yaml`
 - `chart/templates/`
+- `starter-chart/`
+- `HELM_ARTIFACTHUB_AND_TEMPLATING_GUIDE.md`
 
 ## Prerequisites
 
@@ -163,6 +165,11 @@ Use this module to show the progression:
 - Module 2 taught raw manifests
 - Module 3 added observability on top
 - Module 5 turns the same platform into a reusable package for multiple environments
+
+For extra practice with public charts and chart creation, use:
+
+- [HELM_ARTIFACTHUB_AND_TEMPLATING_GUIDE.md](/home/arjun/advanced-k8s-genai/module5/HELM_ARTIFACTHUB_AND_TEMPLATING_GUIDE.md:1)
+- [starter-chart](/home/arjun/advanced-k8s-genai/module5/starter-chart/Chart.yaml:1)
 
 ## Exit Criteria
 
