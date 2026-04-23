@@ -110,10 +110,96 @@ kubectl create deployment broken-app \
   -n genai
 ```
 
-Now use your AI tooling with cluster context to investigate. Prompts can include:
+Wait a few seconds, then confirm that the pod is unhealthy:
+
+```bash
+kubectl get pods -n genai
+kubectl describe pod -n genai -l app=broken-app
+```
+
+At this point, the goal is to let an MCP client call the read-only tools you built.
+
+## Step 8: Call the MCP Tools with a Client
+
+You have a few ways to do this.
+
+### Option A: Use the Sample Python Client
+
+This is the easiest way to prove the server works before involving a full AI assistant.
+
+Run:
+
+```bash
+python3 module8/mcp-server/client.py
+```
+
+That client will:
+
+- connect to `http://localhost:8000/sse`
+- list the available MCP tools
+- call `get_cluster_nodes`
+- call `get_pods_in_namespace` for `default`
+- call `get_pods_in_namespace` for `genai`
+- highlight unhealthy pods
+- show recent Kubernetes events for the first failing pod
+
+This confirms that your server is reachable and that the tools can read real cluster state.
+
+For the `broken-app` example, you should see a short troubleshooting summary that points to `ErrImagePull` or `ImagePullBackOff` instead of a raw Python object dump.
+
+### Option B: Use an AI Client That Supports MCP
+
+If you are using an MCP-capable client such as VS Code, Claude, or another MCP desktop tool, add this server as a remote MCP endpoint:
+
+- name: `k8s-readonly`
+- transport: `sse`
+- URL: `http://127.0.0.1:8000/sse`
+
+Once connected, the client should discover tools like:
+
+- `get_cluster_nodes`
+- `get_namespaces`
+- `get_pods_in_namespace`
+- `get_recent_events`
+- `get_pod_logs`
+
+Then ask the client to investigate the broken workload with prompts like:
 
 - "Why is `broken-app` not starting in namespace `genai`?"
 - "Show the likely root cause and the next kubectl command I should run."
+- "Call the pod, events, and logs tools for `genai` and summarize the failure."
+
+The expected investigation flow is:
+
+1. the client calls `get_pods_in_namespace` for `genai`
+2. it notices an image pull failure such as `ErrImagePull` or `ImagePullBackOff`
+3. it may call `get_recent_events` for `genai`
+4. it explains that the image tag does not exist
+5. it recommends the next operational step, such as fixing the image name
+
+### Option C: Call Individual Tools Manually from Python
+
+If you want students to see the tool calls more directly, they can also edit `module8/mcp-server/client.py` and add calls such as:
+
+```python
+result = await client.call_tool("get_recent_events", {"namespace": "genai"})
+print(result)
+```
+
+or:
+
+```python
+result = await client.call_tool("get_pod_logs", {
+    "namespace": "genai",
+    "pod_name": "<broken-pod-name>",
+    "tail_lines": 50
+})
+print(result)
+```
+
+This makes the MCP model more concrete for students: an AI client is not using magic. It is calling named tools on a server you control.
+
+## Step 9: Clean Up
 
 Clean it up after:
 
