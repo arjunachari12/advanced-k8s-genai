@@ -14,6 +14,41 @@ This is useful for:
 
 This first exercise creates the local AI endpoint that the next exercise can reuse with `kubectl-ai`.
 
+## Prerequisites
+
+- `kubectl` works against your cluster
+- internet access is available for plugin installation
+- you have an LLM provider key, such as `OPENAI_API_KEY` or `GEMINI_API_KEY`
+
+## Install Krew If Needed
+
+```bash
+(
+  set -x
+  cd "$(mktemp -d)"
+  OS="$(uname | tr '[:upper:]' '[:lower:]')"
+  ARCH="$(uname -m | sed -e 's/x86_64/amd64/' -e 's/\(arm\)\(64\)\?.*/\1\2/' -e 's/aarch64$/arm64/')"
+  KREW="krew-${OS}_${ARCH}"
+  curl -fsSLO "https://github.com/kubernetes-sigs/krew/releases/latest/download/${KREW}.tar.gz"
+  tar zxvf "${KREW}.tar.gz"
+  ./"${KREW}" install krew
+)
+export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
+```
+
+## Install kubectl-ai
+
+```bash
+kubectl krew install ai
+```
+
+Verify:
+
+```bash
+kubectl ai --help
+```
+
+
 ## Step 1: Validate the Compose File
 
 ```bash

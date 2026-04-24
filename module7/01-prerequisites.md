@@ -26,6 +26,26 @@ git --version
 The lab was tested with Go `1.26.1`.
 
 ### macOS
+## Install HomeBrew
+
+### Run the script
+
+```bash
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+```
+
+### Add HomeBrew to your PATH
+
+```bash
+echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"' >> ~/.bashrc
+eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+```
+
+### Verify installation
+
+```bash
+brew --version
+```
 
 ```bash
 brew install go
